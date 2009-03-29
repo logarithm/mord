@@ -174,6 +174,10 @@ public:
 	{
 	  	return ((float)full_length) / ((float)rate) / ((float)chan);
 	}
+
+	int getAvialible(){
+		return available;
+	}
 };
 
 #endif
