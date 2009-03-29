@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="mord_dll_2008"
+	Name="mord_dll"
 	ProjectGUID="{19DED97C-D53E-41EB-AD35-15377801FE4E}"
 	RootNamespace="mord_dll_2008"
 	Keyword="Win32Proj"
