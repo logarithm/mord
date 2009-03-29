@@ -177,7 +177,7 @@ public:
 
 	int getAvialible(){
 		return available;
-	}
+	}	
 };
 
 #endif

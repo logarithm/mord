@@ -18,6 +18,14 @@ protected:
 	int chan;
 	int bps;
 	int rate;
+
+public:
+	int getBPS(){
+		return this->bps;
+	}
+	int getRate(){
+		return this->rate;
+	}
 };
 
 #endif
