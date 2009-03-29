@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="mord_dll_2005"
+	Name="mord_dll"
 	ProjectGUID="{CDF6C861-7C4C-47FA-8525-5D0B4431D40F}"
 	RootNamespace="mord_dll_2005"
 	Keyword="Win32Proj"
@@ -167,6 +167,9 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{374BF737-A050-4D5E-9E0E-E6B4F4B28B2D}"
+		/>
 	</References>
 	<Files>
 		<Filter
