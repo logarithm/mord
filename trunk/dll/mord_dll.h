@@ -3,3 +3,5 @@
 #else
 #define DLL_API __declspec(dllimport)
 #endif
+
+extern "C" DLL_API void test(void);

@@ -2,6 +2,8 @@
 //
 
 #include "stdafx.h"
+#include "mord_dll.h"
+#include <stdio.h>
 
 
 #ifdef _MANAGED
@@ -23,6 +25,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	}
 
     return TRUE;
+}
+
+DLL_API void test(void)
+{
+	printf("1");
 }
 
 #ifdef _MANAGED
