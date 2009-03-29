@@ -29,7 +29,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
 DLL_API void test(void)
 {
-	printf("1");
+	printf("asdh adsh asdh jasdhj");
 }
 
 #ifdef _MANAGED

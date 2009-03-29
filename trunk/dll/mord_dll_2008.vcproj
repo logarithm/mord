@@ -192,6 +192,22 @@
 				RelativePath=".\stdafx.h"
 				>
 			</File>
+			<Filter
+				Name="sound"
+				>
+				<File
+					RelativePath="..\waveprocessing\file.h"
+					>
+				</File>
+				<File
+					RelativePath="..\waveprocessing\sound.h"
+					>
+				</File>
+				<File
+					RelativePath="..\waveprocessing\wavesound.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
