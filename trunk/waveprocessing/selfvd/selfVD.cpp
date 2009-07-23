@@ -1,8 +1,7 @@
 #define _USE_MATH_DEFINES
 
 #include <cmath>
-#include <stdio.h>
-#include <tchar.h>
+#include "stdafx.h"
 #include "hausd.h"
 
 __inline float GetA(int i,int j, int r, int R)
@@ -37,20 +36,20 @@ void selfVD(int N, int R, int r, float** Q, float* L)
 
 	float *d,*e;
 	//d = new float[N + 1];
-	e = new float[N + 1];
-	for(i = 0; i < N + 1; i++) L[i] = e[i] = 0;
+	e = new float[N];
+	for(i = 0; i < N; i++) L[i] = e[i] = 0;
 	tred2(Q, N, L, e); // это приведение матрицы к трехдиагональному виду
 		
 	// обнуление
-	for(i = 0; i < N + 1; i++)
-		for(j = 0; j < N + 1; j++)
+	for(i = 0; i < N; i++)
+		for(j = 0; j < N; j++)
 			Q[i][j] = 0;
 	 
 	//заполнение диагональных
-	for(i = 1; i < N + 1; i++) Q[i][i] = L[i];
+	for(i = 0; i < N; i++) Q[i][i] = L[i];
 	 
 	//заполнение поддиагональных
-	for(i = 1; i < N; i++) Q[i+1][i]=e[i+1];
+	for(i = 0; i < N - 1; i++) Q[i+1][i]=e[i+1];
 	 
 	tqli(L, e, N, Q); // это непосредственно получение сч и св
 	// после трансформации d - сч, a - св
