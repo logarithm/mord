@@ -1,5 +1,8 @@
+#ifndef DFT_H_INCLUDED
+#define DFT_H_INCLUDED
+
 #include <cmath>
-#include <vector>
+//#include <vector>
 
 #ifndef M_PI 
 #define M_PI 3.14159265358979323846
@@ -32,3 +35,5 @@ void DFT(float* data, float* res, int length)
 //        P_dpf(i,otr)=(s1^2+s2^2)/nf;
 //    end;
 //    clear i s1 s2 k S
+
+#endif

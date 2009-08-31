@@ -14,8 +14,8 @@ __inline float GetA(int tau, int r, int R)
 }*/
 
 
-__inline float GetA(int i,int j, int r, int R)
+__inline double GetA(int i,int j, int r, int R)
 {
-   float sigma = M_PI/R;    
+   double sigma = M_PI/R;    
    return (i==j) ? (sigma/M_PI) : (sin(r*sigma*(i-j))-sin((r-1)*sigma*(i-j)))/(i-j)/M_PI;
 }

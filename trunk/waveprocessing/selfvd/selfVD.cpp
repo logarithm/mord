@@ -1,7 +1,7 @@
 #define _USE_MATH_DEFINES
 
 #include <cmath>
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "hausd.h"
 
 __inline float GetA(int i,int j, int r, int R)
