@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstring>
 
 #undef STRICT
 #define WIN32_LEAN_AND_MEAN     1
@@ -17,7 +18,7 @@ int main(int argc, char** argv) {
 	int R = 10;		//Количество частотных диапазонов
 	int N = 60;		//Размер фрейма (окна анализа)
 	int J = 8;		//количество ненулевых собственных чисел собственных векторов матрицы А
-	int P = 1000;	//Количество отсчетов от начала файла, которые считаются паузой
+	int P = 100;	//Количество отсчетов от начала файла, которые считаются паузой
 
 	char* action;
 
@@ -26,6 +27,14 @@ int main(int argc, char** argv) {
 	char* matrix_a_path;
 	
 	if (argc == 2 && strcmp(argv[1], "-help") == 0) {
+		printf("Using: ");
+		printf("basic.exe command \n\t\t-s path_to_source_file \n\t\t-d path_to_destination_file \n\t\t-a path_to_matrix_AA_file\n");
+		printf("\t\t[-R number] \n\t\t[-N number] \n\t\t[-J number] \n\t\t[-P number]\n\n");
+		printf("\t> command - Now supported only -c (compress)\n");
+		printf("\t> -R number - Count of frequency bands\n");
+		printf("\t> -N number - The size of the frame\n");
+		printf("\t> -J number - Count of eigenvalues eigenvectors of the matrix A\n");
+		printf("\t> -P number - The number of samples from the beginning of the file, which are considered a pause\n");
 		return 0;
 	}
 	if (argc < 6) {
@@ -52,7 +61,7 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	wav_name = "files/wav/lec02_8000.wav";
+	//wav_name = "files/wav/lec02_8000.wav";
 	//wav_name = "files/wav/news_studio_8000.wav";
 	//compressed_name = "files/wav/news_studio_8000_compressed.wav";
 	//matrix_a_path = "files/matrix/AA_10_60_8.txt";
