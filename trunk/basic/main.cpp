@@ -13,8 +13,19 @@ const int J = 8;	//
 
 int main(int argc, char** argv) {
 	WaveSound* ws = new WaveSound();
-	//char* wav_name = "files/wav/lec02_03_8000.wav";
-	char* wav_name = "files/wav/news_studio_8000.wav";;
+
+	char* wav_name;
+	char* compressed_name;
+	if (argc == 1) {
+		//char* wav_name = "files/wav/lec02_03_8000.wav";
+		wav_name = "files/wav/news_studio_8000.wav";
+		compressed_name = "files/wav/news_studio_8000_compressed.wav";
+	}
+	else {
+		wav_name = argv[1];
+		compressed_name = argv[2];
+	}
+
 	ws->Load(wav_name);
 
 	float** AA = new float*[R*J];
@@ -115,7 +126,12 @@ int main(int argc, char** argv) {
 	ws->Destroy();
 
 	WaveSound* result_file = new WaveSound();
-	result_file->Create("files/wav/news_studio_8000_compressed.wav", result_data, signal_length, 1, 8000, 16);
+	result_file->Create(compressed_name, 
+						result_data, 
+						signal_length, 
+						ws->getChannels(), 
+						ws->getRate(), 
+						ws->getBPS());
 	//result_file->Create("files/wav/news_studio_8000_compressed.wav", wav_data, wav_data_length, 1, 8000, 16);
 	
 	delete wav_data;
