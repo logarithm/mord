@@ -10,7 +10,7 @@
 using namespace std;
 
 #include "wavesound.h"
-
+#include "compressing/compress_data.h"
 #include "matrix/matrix_processing.h"
 
 int main(int argc, char** argv) {
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
 	int pause_boundary = 20;								//Порог для решающей функции
 
 	//===================== Вычисление энергии паузы ======================= //
-	/*float* pause_power = new float[Rp];
+	float* pause_power = new float[Rp];
 	memset(pause_power, 0, sizeof(float) * Rp);
 
 	for (int curr_pause_area = 0; curr_pause_area < P; curr_pause_area++) {
@@ -179,8 +179,6 @@ int main(int argc, char** argv) {
 		area_counter++;
 	}
 
-	ws->Destroy();
-
 	WaveSound* result_file = new WaveSound();
 	result_file->Create(compressed_name, 
 						result_data, 
@@ -189,6 +187,7 @@ int main(int argc, char** argv) {
 						ws->getRate(), 
 						ws->getBPS());
 
+	ws->Destroy();
 	result_file->Destroy();
 	
 	delete wav_data;
@@ -198,10 +197,9 @@ int main(int argc, char** argv) {
 	delete ws;
 	delete result_file;
 
-	printf("Compression time: %.3f sec.\n", (GetTickCount() - start_tick_count)/1000.f);*/
+	printf("Compression time: %.3f sec.\n", (GetTickCount() - start_tick_count)/1000.f);
 
-
-	float a[] = {
+	/*float a[] = {
 		 0.014372,	 0.002936,	 0.002729,	-0.006935,	 0.034345,	-0.009182,	-0.000265,	 0.000757, 
 		 0.009679,	-0.022560,	-0.006974,	-0.012712,	 0.000026,	 0.003752,	 0.005623,	 0.005034, 
 		 0.000397,	 0.003751,	-0.000987,	-0.001325,	-0.000874,	-0.001920,	 0.000225,	-0.000162, 
@@ -244,7 +242,7 @@ int main(int argc, char** argv) {
 		}
 		printf("\n");
 		Rs_max[i] = max;
-	}
+	}*/
 
 	return 0;
 }
