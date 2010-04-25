@@ -14,12 +14,12 @@ using namespace std;
 #include "matrix/matrix_processing.h"
 
 int main(int argc, char** argv) {
-	//******************** Default values *********************//
+	//======================= Default values =======================//
 	int Rp = 10;	//Количество частотных диапазонов для паузы
 	int Np = 60;	//Размер фрейма (окна анализа) для паузы
 	int P = 100;	//Количество фреймов которые считаются паузой
 	int p = 0;		//Количество отсчетов от начала файла до начала паузы
-	int BPS = 3;	//Количество разрядов квантования
+	unsigned short BPS = 7;	//Количество разрядов квантования
 
 
 	char* action;
@@ -77,11 +77,15 @@ int main(int argc, char** argv) {
 	WaveSound* ws = new WaveSound();
 	ws->Load(wav_name);
 
-	float** AA = new float*[Rp*Jp];
+	float** AAp = new float*[Rp*Jp];
 	for (int i = 0; i < Rp*Jp; i++) 
-		AA[i] = new float[Np];
+		AAp[i] = new float[Np];	
+	matrix_read(matrix_a_path, Rp*Jp, Np, AAp);
 
-	matrix_read(matrix_a_path, Rp*Jp, Np, AA);
+	float** AAs = new float*[Rs*Js];
+	for (int i = 0; i < Rs*Js; i++) 
+		AAs[i] = new float[Ns];
+	matrix_read(matrix_a_path, Rs*Js, Ns, AAs);
 
 	int wav_data_length = ws->getAvialible();				//Длина исходного сигнала
 
@@ -90,11 +94,6 @@ int main(int argc, char** argv) {
 
 	float wav_mean = matrix_mean(&wav_data, 1, wav_data_length);
 	
-	int area_count = (int)ceil(wav_data_length / (float)Np);	//Количество анализируемых отрезков
-	int area_counter = 0;									//Количество обработанных отрезков
-	int sample_counter = 0;
-	int pause_boundary = 20;								//Порог для решающей функции
-
 	//===================== Вычисление энергии паузы ======================= //
 	float* pause_power = new float[Rp];
 	memset(pause_power, 0, sizeof(float) * Rp);
@@ -109,7 +108,7 @@ int main(int argc, char** argv) {
 				pause_data[i] = pause_data[i] - pause_mean;
 
 		float* pause_yy = new float[Rp*Jp];
-		matrix_mult_trans(&pause_data, AA, 1, 60, 80, &pause_yy);
+		matrix_mult_trans(&pause_data, AAp, 1, 60, 80, &pause_yy);
 		
 		for (int i = 0; i < Rp; i++) {
 			for (int j = 0; j < Jp; j++) {
@@ -126,12 +125,24 @@ int main(int argc, char** argv) {
 	
 	//===================== Окончание вычисления энергии паузы ======================= //
 
+	int area_count = (int)ceil(wav_data_length / (float)Np);	//Количество анализируемых отрезков
+	int area_counter = 0;									//Количество обработанных отрезков
+	int pause_boundary = 20;								//Порог для решающей функции
+
 	int signal_area_count = 0;
 	int signal_length = 0;
 	int pause_area_count = 0;
+	int pause_segment_count = 0;
 	
-	float* result_data = new float[wav_data_length];			//Полученный сигнал
+	float* result_data = new float[wav_data_length];			//Полученный сигнал	
 
+	unsigned short* pause_map = new unsigned short[ceil(area_count/2.0) * 2];
+	bool last_pause = false;
+	int pause_section_length = 0;
+	int last_pause_segment_area_index = 0;
+	int prev_last_pause_segment_area_index = 0;
+
+	//===================== Определение участков пауз ======================= //
 	for (int curr_area = 0; curr_area < area_count; curr_area++) {
 		int area_length = (curr_area + 1)*Np > wav_data_length ? wav_data_length - (curr_area)*Np : Np;
 
@@ -149,7 +160,7 @@ int main(int argc, char** argv) {
 		memset(area_power, 0, sizeof(float) * Rp);
 		
 		float* area_yy = new float[Rp*Jp];
-		matrix_mult_trans(&area_data, AA, 1, 60, 80, &area_yy);
+		matrix_mult_trans(&area_data, AAp, 1, area_length, Rp*Jp, &area_yy);
 
 		for (int i = 0; i < Rp; i++) {
 			for (int j = 0; j < Jp; j++) {
@@ -162,15 +173,35 @@ int main(int argc, char** argv) {
 			area_power[i] /= (float) pause_power[i];
 			decision_function = (i == 0 || area_power[i] > decision_function) ? area_power[i] : decision_function;
 		}
-
 		if (decision_function > pause_boundary) {		//Сигнал
 			signal_area_count++;
 
 			memcpy(result_data + signal_length, area_data, sizeof(float)*area_length); //Копирование данных в выходной файл
 			signal_length += area_length;
+
+			if (last_pause) {
+				if (last_pause_segment_area_index > 0) {
+					pause_map[(pause_segment_count - 1)*2] = ((last_pause_segment_area_index + 1)- pause_section_length) - prev_last_pause_segment_area_index;
+					pause_map[(pause_segment_count - 1)*2 + 1] = pause_section_length;
+
+					prev_last_pause_segment_area_index = last_pause_segment_area_index;
+				}
+			}
+
+			last_pause = false;
 		}
 		else {											//Пауза
 			pause_area_count++;
+
+			if (!last_pause) {
+				pause_section_length = 0;
+				pause_segment_count++;
+			}
+
+			
+			pause_section_length++;
+			last_pause_segment_area_index = curr_area;
+			last_pause = true;
 		}
 		
 		delete area_yy;
@@ -179,7 +210,77 @@ int main(int argc, char** argv) {
 		area_counter++;
 	}
 
-	WaveSound* result_file = new WaveSound();
+	if (last_pause) {
+		pause_map[(pause_segment_count - 1)*2] = ((last_pause_segment_area_index + 1)- pause_section_length) - prev_last_pause_segment_area_index;
+		pause_map[(pause_segment_count - 1)*2 + 1] = pause_section_length;
+	}
+
+	// ===================== Субполосное кодирование и квантование ======================= //
+	area_count = (int)ceil(signal_length / (float)Ns);
+	area_counter = 0;	
+
+	unsigned short* quant_res = new unsigned short[Rs*Js];
+	float* Rs_max = new float[Rs];
+	bool* s_sign = new bool[Rs*Js];
+
+	Frame* frames = new Frame[area_count];
+
+	for (int curr_area = 0; curr_area < area_count; curr_area++) {
+		int area_length = (curr_area + 1)*Ns > signal_length ? signal_length - (curr_area)*Ns : Ns;
+
+		float* area_data = new float[area_length];			//Семпл	
+		memcpy(area_data, result_data+(curr_area*Ns), sizeof(float)*area_length);		
+		
+		float area_mean = matrix_mean(&area_data, 1, area_length);
+
+		//Сигнал минус среднее
+		for (int i = 0; i < area_length; i++) 
+			area_data[i] = area_data[i] - area_mean;
+		
+		float* area_yy = new float[Rs*Js]; //Субполосный вектор
+		matrix_mult_trans(&area_data, AAs, 1, area_length, Rs*Js, &area_yy);
+
+		//Квантование
+		memset(quant_res, 0, sizeof(short)*Rs*Js);
+		memset(Rs_max, 0, sizeof(float)*Rs);
+		memset(s_sign, 0, sizeof(bool)*Rs*Js);
+
+		int quant_lvl_cnt = pow(2.0, BPS);
+
+		for (int i = 0; i < Rs; i++) {
+			float max = abs(area_yy[i*Js]);
+			//Вычисление максимума для частотного интервала и знаков числа
+			for (int j = 0; j < Js; j++) {
+				int m_index = i*Js + j;
+				if (area_yy[m_index] < 0) s_sign[m_index] = true;
+
+				area_yy[m_index] = abs(area_yy[m_index]);
+				if (area_yy[m_index] > max) {
+					max = area_yy[m_index];
+				}
+			}
+
+			for (int j = 0; j < Js; j++) {
+				int m_index = i*Js + j;
+				float delta = max / (quant_lvl_cnt - 1);
+				quant_res[m_index] = floor((area_yy[m_index] / delta) + 0.5); 
+			}
+			Rs_max[i] = max;
+		}
+
+		frames[curr_area] = Frame(Rs, Ns, BPS, Rs_max, quant_res, s_sign);
+		
+		delete area_yy;
+		delete area_data;
+		area_counter++;
+	}
+
+	FrameContainer frameContainer(frames, area_count);
+
+	saveCompressFile("files/wav/destination.cwf", wav_data_length, ws->getBPS(), Rp, Np, Rs, Ns, BPS, pause_segment_count, pause_map, frameContainer);
+	
+
+	/*WaveSound* result_file = new WaveSound();
 	result_file->Create(compressed_name, 
 						result_data, 
 						signal_length, 
@@ -187,62 +288,25 @@ int main(int argc, char** argv) {
 						ws->getRate(), 
 						ws->getBPS());
 
-	ws->Destroy();
 	result_file->Destroy();
-	
+	delete result_file;*/
+
+	ws->Destroy();	
+
+	delete quant_res;
+	delete Rs_max;
+	delete s_sign;
 	delete wav_data;
 	delete pause_power;
-	delete AA;
+	delete AAp;
+	delete AAs;
 
 	delete ws;
-	delete result_file;
 
+	//int a;
+	//scanf("%d", &a);
 	printf("Compression time: %.3f sec.\n", (GetTickCount() - start_tick_count)/1000.f);
 
-	/*float a[] = {
-		 0.014372,	 0.002936,	 0.002729,	-0.006935,	 0.034345,	-0.009182,	-0.000265,	 0.000757, 
-		 0.009679,	-0.022560,	-0.006974,	-0.012712,	 0.000026,	 0.003752,	 0.005623,	 0.005034, 
-		 0.000397,	 0.003751,	-0.000987,	-0.001325,	-0.000874,	-0.001920,	 0.000225,	-0.000162, 
-		-0.002897,	-0.001030,	-0.001740,	 0.000463,	-0.000701,	-0.000519,	 0.000740,	 0.000911, 
-		 0.002087,	 0.004634,	 0.000796,	 0.002857,	 0.001232,	-0.001783,	 0.000358,	-0.000218,
-		 0.001667,	 0.001282,	-0.003026,	 0.003267,	 0.001486,	-0.001802,	-0.000697,	 0.000335,
-		 0.001107,	 0.000746,	-0.000313,	-0.000863,	-0.000390,	-0.000165,	-0.000664,	-0.000490,
-		 0.001158,	 0.001042,	-0.001261,	-0.000883,	 0.000543,	 0.000995,	-0.000469,	-0.000186, 
-		 0.000039,	 0.000960,	 0.000257,	 0.000264,	-0.000481,	-0.000600,	 0.000288,	-0.000577, 
-		 0.000742,	 0.000066,	 0.000284,	 0.000123,	 0.001163,	-0.001045,	-0.000007,	 0.000158};
-
-	int quant_lvl_cnt = pow(2.0, BPS);
-
-	int* quant_res = new int[Rs*Js];
-	float* Rs_max = new float[Rs];
-	bool* s_sign = new bool[Rs*Js];
-
-	memset(quant_res, 0, sizeof(int)*Rs*Js);
-	memset(Rs_max, 0, sizeof(float)*Rs);
-	memset(s_sign, 0, sizeof(bool)*Rs*Js);
-
-	for (int i = 0; i < Rs; i++) {
-		float max = abs(a[i*Js]); 
-		for (int j = 0; j < Js; j++) {
-			int m_index = i*Js + j;
-			if (a[m_index] < 0) s_sign[m_index] = true;
-
-			a[m_index] = abs(a[m_index]);
-			if (a[m_index] > max) {
-				max = a[m_index];
-			}
-		}
-
-		for (int j = 0; j < Js; j++) {
-			int m_index = i*Js + j;
-			float delta = max / (quant_lvl_cnt - 1);
-			quant_res[m_index] = floor((a[m_index] / delta) + 0.5); 
-			if (s_sign[m_index] = quant_res[m_index] > 0 ? s_sign[m_index] : false) printf("-");
-			printf("%d\t", quant_res[m_index]);
-		}
-		printf("\n");
-		Rs_max[i] = max;
-	}*/
-
+	readCompressFile("files/wav/destination.cwf");
 	return 0;
 }
