@@ -7,6 +7,9 @@
 
 #include <cstring>
 
+#include "../wavesound.h"
+#include "../matrix/matrix_processing.h"
+
 byte getBit(int data, int bitIndex) {
 	return (byte) ((data >> bitIndex) & 0x01);
 }
@@ -191,8 +194,8 @@ struct FrameContainer {
 	}
 };
 
-void saveCompressFile(char* compressPath, unsigned int sourceLength, byte sourceBps,
-						short Rp, short Np, short Rs, short Ns, byte bps, 
+void saveCompressFile(char* compressPath, unsigned sourceLength, byte sourceBps,
+						unsigned short Rp, unsigned short Np, unsigned short Rs, unsigned short Ns, byte bps, 
 						int pauseSegmentCount, unsigned short* pauseMap, 
 						FrameContainer frames) {
 	FILE* out = fopen(compressPath, "wb");
@@ -214,7 +217,89 @@ void saveCompressFile(char* compressPath, unsigned int sourceLength, byte source
 	fclose(out);
 }
 
-void readCompressFile(char* compressPath) {
+void saveDecompressedFile(char* decompressPath, unsigned int sourceLength, byte sourceBps,
+						unsigned short Rp, unsigned short Np, unsigned short Rs, unsigned short Ns, 
+						int pauseSegmentCount, unsigned short* pauseMap, 
+						FrameContainer frames) {
+	unsigned short Js = 2*(Ns/(2*Rs)) + 2;
+	unsigned short Jp = 2*(Np/(2*Rp)) + 2;
+
+	float* wav_data = new float[sourceLength];
+	memset(wav_data, 0, sizeof(float)*sourceLength);
+
+	int wav_length = 0;
+
+	float** AAs = new float*[Rs*Js];
+	for (int i = 0; i < Rs*Js; i++) 
+		AAs[i] = new float[Ns];
+	matrix_read("files/matrix/AA_10_60_8.txt", Rs*Js, Ns, AAs);
+
+	for (int frameIndex = 0; frameIndex < frames.frameCount; frameIndex++) {
+		int quant_lvl_cnt = pow(2.0, frames.frames[frameIndex].bps);
+
+		float* area_yy = new float[Rs*Js];
+		memset(area_yy, 0, sizeof(float)*Rs*Js);
+
+		float* area_data = new float[Ns];
+		memset(area_data, 0, sizeof(float)*Ns);
+
+		for (int i = 0; i < Rs; i++) {
+			float max = frames.frames[frameIndex].maxs[i];
+			float delta = max / (quant_lvl_cnt - 1);
+
+			for (int j = 0; j < Js; j++) {
+				int m_index = i*Js + j;
+				float val = frames.frames[frameIndex].quant_values[m_index] * delta;
+				if (frames.frames[frameIndex].sign[m_index]) val *= -1;
+
+				area_yy[m_index] = val;
+			}
+		}
+
+		matrix_mult(&area_yy, AAs, 1, Rs*Js, Ns, &area_data);
+		memcpy(wav_data + (frameIndex*Ns), area_data, sizeof(float)*Ns);
+		wav_length += Ns;
+
+		delete area_yy;
+		delete area_data;
+	}
+
+	float* result_data = new float[sourceLength + Ns + Np];
+	memset(result_data, 0, sizeof(float)*(sourceLength + Ns + Np));
+	unsigned int wav_shift = 0;
+	unsigned int result_shift = 0;
+
+	for (int pauseIndex = 0; pauseIndex < pauseSegmentCount; pauseIndex++) {
+		int pauseMapIndex = pauseIndex * 2;
+
+		float* pause_data = new float[Np*pauseMap[pauseMapIndex +1]];
+		memset(pause_data, 0, sizeof(float)*(Np*pauseMap[pauseMapIndex +1]));
+
+		memcpy(result_data + result_shift, wav_data + wav_shift, sizeof(float) * (Np*pauseMap[pauseMapIndex]));
+		result_shift += (Np*pauseMap[pauseMapIndex]);
+		wav_shift += (Np*pauseMap[pauseMapIndex]);
+		memcpy(result_data + result_shift, pause_data, sizeof(float) * (Np*pauseMap[pauseMapIndex +1]));
+		result_shift += Np*pauseMap[pauseMapIndex +1];
+
+		delete pause_data;
+	}
+
+	WaveSound* result_file = new WaveSound();
+	result_file->Create(decompressPath, 
+						result_data, 
+						sourceLength, 
+						1, 
+						8000, 
+						sourceBps);
+
+	result_file->Destroy();
+	delete result_file;
+	delete wav_data;
+	delete result_data;
+	delete AAs;
+}
+
+void readCompressFile(char* compressPath, char* decompressPath) {
 	FILE* in = fopen(compressPath, "rb");
 
 	fseek(in, SEEK_SET, SEEK_END);
@@ -223,8 +308,8 @@ void readCompressFile(char* compressPath) {
 
 	unsigned knit;
 	fread(&knit, sizeof(int), 1, in);
-	unsigned sourceLegth;
-	fread(&sourceLegth, sizeof(int), 1, in);
+	unsigned sourceLength;
+	fread(&sourceLength, sizeof(int), 1, in);
 	byte sourceBps;
 	fread(&sourceBps, sizeof(byte), 1, in);
 	short Rp;
@@ -256,7 +341,10 @@ void readCompressFile(char* compressPath) {
 	FrameContainer frames(maxFrameCount);
 	frames.read(data, dataSize, Rs, Ns, bps);
 
+	saveDecompressedFile(decompressPath, sourceLength, sourceBps, Rp, Np, Rs, Ns, pauseSegmentCount, pauseMap, frames);
+
 	fclose(in);
+	delete data;
 }
 
 #endif
