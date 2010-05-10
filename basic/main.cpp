@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
 	int Np = 60;	//Размер фрейма (окна анализа) для паузы
 	int P = 100;	//Количество фреймов которые считаются паузой
 	int p = 0;		//Количество отсчетов от начала файла до начала паузы
-	unsigned short BPS = 7;	//Количество разрядов квантования
+	unsigned short BPS = 2;	//Количество разрядов квантования
 
 
 	char* action;
@@ -66,11 +66,6 @@ int main(int argc, char** argv) {
 	int Ns = Np;					//Размер фрейма (окна анализа) для сигнала
 	int Rs = Rp;					//Количество частотных диапазонов для сигнала
 	int Js = 2*(Ns/(2*Rs)) + 2;		//Количество ненулевых собственных чисел собственных векторов матрицы для сигнала
-
-	//wav_name = "files/wav/lec02_8000.wav";
-	//wav_name = "files/wav/news_studio_8000.wav";
-	//compressed_name = "files/wav/news_studio_8000_compressed.wav";
-	//matrix_a_path = "files/matrix/AA_10_60_8.txt";
 
 	unsigned long start_tick_count = GetTickCount();
 
@@ -139,8 +134,7 @@ int main(int argc, char** argv) {
 	unsigned short* pause_map = new unsigned short[ceil(area_count/2.0) * 2];
 	bool last_pause = false;
 	int pause_section_length = 0;
-	int last_pause_segment_area_index = 0;
-	int prev_last_pause_segment_area_index = 0;
+	int signal_section_length = 0;
 
 	//===================== Определение участков пауз ======================= //
 	for (int curr_area = 0; curr_area < area_count; curr_area++) {
@@ -180,14 +174,13 @@ int main(int argc, char** argv) {
 			signal_length += area_length;
 
 			if (last_pause) {
-				if (last_pause_segment_area_index > 0) {
-					pause_map[(pause_segment_count - 1)*2] = ((last_pause_segment_area_index + 1)- pause_section_length) - prev_last_pause_segment_area_index;
-					pause_map[(pause_segment_count - 1)*2 + 1] = pause_section_length;
+				pause_map[(pause_segment_count - 1) * 2] = signal_section_length;
+				pause_map[(pause_segment_count - 1)*2 + 1] = pause_section_length;
 
-					prev_last_pause_segment_area_index = last_pause_segment_area_index;
-				}
+				signal_section_length = 0;
 			}
 
+			signal_section_length++;
 			last_pause = false;
 		}
 		else {											//Пауза
@@ -200,7 +193,6 @@ int main(int argc, char** argv) {
 
 			
 			pause_section_length++;
-			last_pause_segment_area_index = curr_area;
 			last_pause = true;
 		}
 		
@@ -211,7 +203,7 @@ int main(int argc, char** argv) {
 	}
 
 	if (last_pause) {
-		pause_map[(pause_segment_count - 1)*2] = ((last_pause_segment_area_index + 1)- pause_section_length) - prev_last_pause_segment_area_index;
+		pause_map[(pause_segment_count - 1)*2] = signal_section_length;
 		pause_map[(pause_segment_count - 1)*2 + 1] = pause_section_length;
 	}
 
@@ -260,9 +252,9 @@ int main(int argc, char** argv) {
 				}
 			}
 
+			float delta = max / (quant_lvl_cnt - 1);
 			for (int j = 0; j < Js; j++) {
 				int m_index = i*Js + j;
-				float delta = max / (quant_lvl_cnt - 1);
 				quant_res[m_index] = floor((area_yy[m_index] / delta) + 0.5); 
 			}
 			Rs_max[i] = max;
@@ -278,18 +270,12 @@ int main(int argc, char** argv) {
 	FrameContainer frameContainer(frames, area_count);
 
 	saveCompressFile("files/wav/destination.cwf", wav_data_length, ws->getBPS(), Rp, Np, Rs, Ns, BPS, pause_segment_count, pause_map, frameContainer);
-	
+	unsigned long end_compress_tick_count = GetTickCount();
+	readCompressFile("files/wav/destination.cwf", "files/wav/destination.wav");
+	unsigned long end_decompress_tick_count = GetTickCount();
 
-	/*WaveSound* result_file = new WaveSound();
-	result_file->Create(compressed_name, 
-						result_data, 
-						signal_length, 
-						ws->getChannels(), 
-						ws->getRate(), 
-						ws->getBPS());
-
-	result_file->Destroy();
-	delete result_file;*/
+	printf("Compression time: %.3f sec.\n", (end_compress_tick_count - start_tick_count)/1000.f);
+	printf("Decompression time: %.3f sec.\n", (end_decompress_tick_count - end_compress_tick_count)/1000.f);	
 
 	ws->Destroy();	
 
@@ -303,10 +289,5 @@ int main(int argc, char** argv) {
 
 	delete ws;
 
-	//int a;
-	//scanf("%d", &a);
-	printf("Compression time: %.3f sec.\n", (GetTickCount() - start_tick_count)/1000.f);
-
-	readCompressFile("files/wav/destination.cwf");
 	return 0;
 }
