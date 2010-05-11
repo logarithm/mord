@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 #include <cstring>
 
-#undef STRICT
-#define WIN32_LEAN_AND_MEAN     1
-#include <windows.h>
+//#undef STRICT
+//#define WIN32_LEAN_AND_MEAN     1
+//#include <windows.h>
 
 #include <cmath>
 using namespace std;
@@ -31,14 +32,16 @@ int main(int argc, char** argv) {
 	if (argc == 2 && strcmp(argv[1], "-help") == 0) {
 		printf("Using: ");
 		printf("basic.exe command \n\t\t-s path_to_source_file \n\t\t-d path_to_destination_file \n\t\t-a path_to_matrix_AA_file\n");
-		printf("\t\t[-Rp number] \n\t\t[-Np number] \n\t\t[-P number]\n\n");
-		printf("\t> command - Now supported only -c (compress)\n");
+                printf("\t\t[-Rp number] \n\t\t[-Np number] \n\t\t[-P number] \n\t\t[-p number] \n\t\t[-BPS number]\n\n");
+                printf("\t> command - Now supported only -c (compress), -d (decompress)\n");
 		printf("\t> -Rp number - Count of pause frequency bands\n");
 		printf("\t> -Np number - The size of the pause frame\n");
 		printf("\t> -P number - The number of samples from the beginning of the file, which are considered a pause\n");
+                printf("\t> -p number - The number of samples from the beginning of the file to start of pause\n");
+                printf("\t> -BPS number - Bits per sample in compressed file\n");
 		return 0;
 	}
-	if (argc < 6) {
+        if (argc < 6) {
 		printf("Command line arguments error. Use '-help'\n");
 		return 0;
 	}
@@ -59,15 +62,18 @@ int main(int argc, char** argv) {
 				P = atoi(argv[i+1]);
 			else if (strcmp(argv[i], "-p") == 0)
 				p = atoi(argv[i+1]);
+                        else if (strcmp(argv[i], "-BPS") == 0)
+                                BPS = atoi(argv[i+1]);
 		}
-	}
+        }        
 
-	int Jp = 2*(Np/(2*Rp)) + 2;		// оличество ненулевых собственных чисел собственных векторов матрицы дл€ паузы
-	int Ns = Np;					//–азмер фрейма (окна анализа) дл€ сигнала
-	int Rs = Rp;					// оличество частотных диапазонов дл€ сигнала
+        int Jp = 2*(Np/(2*Rp)) + 2;		// оличество ненулевых собственных чисел собственных векторов матрицы дл€ паузы
+        int Ns = Np;				//–азмер фрейма (окна анализа) дл€ сигнала
+        int Rs = Rp;				// оличество частотных диапазонов дл€ сигнала
 	int Js = 2*(Ns/(2*Rs)) + 2;		// оличество ненулевых собственных чисел собственных векторов матрицы дл€ сигнала
 
-	unsigned long start_tick_count = GetTickCount();
+        struct timeval compress_start, compress_end, decompress_end;
+        gettimeofday(&compress_start, NULL);
 
 	WaveSound* ws = new WaveSound();
 	ws->Load(wav_name);
@@ -131,7 +137,7 @@ int main(int argc, char** argv) {
 	
 	float* result_data = new float[wav_data_length];			//ѕолученный сигнал	
 
-	unsigned short* pause_map = new unsigned short[ceil(area_count/2.0) * 2];
+        unsigned short* pause_map = new unsigned short[(int) (ceil(area_count/2.0) * 2)];
 	bool last_pause = false;
 	int pause_section_length = 0;
 	int signal_section_length = 0;
@@ -269,13 +275,14 @@ int main(int argc, char** argv) {
 
 	FrameContainer frameContainer(frames, area_count);
 
-	saveCompressFile("files/wav/destination.cwf", wav_data_length, ws->getBPS(), Rp, Np, Rs, Ns, BPS, pause_segment_count, pause_map, frameContainer);
-	unsigned long end_compress_tick_count = GetTickCount();
-	readCompressFile("files/wav/destination.cwf", "files/wav/destination.wav");
-	unsigned long end_decompress_tick_count = GetTickCount();
+        saveCompressFile(compressed_name, wav_data_length, ws->getBPS(), Rp, Np, Rs, Ns, BPS, pause_segment_count, pause_map, frameContainer);
+        gettimeofday(&compress_end, NULL);
 
-	printf("Compression time: %.3f sec.\n", (end_compress_tick_count - start_tick_count)/1000.f);
-	printf("Decompression time: %.3f sec.\n", (end_decompress_tick_count - end_compress_tick_count)/1000.f);	
+        readCompressFile(compressed_name, "files/wav/destination.wav");
+        gettimeofday(&decompress_end, NULL);
+
+        printf("Compression time: %.3f sec.\n", ((compress_end.tv_sec - compress_start.tv_sec) * 1000 + (compress_end.tv_usec- compress_start.tv_usec)/1000.f) / 1000);
+        printf("Decompression time: %.3f sec.\n", ((decompress_end.tv_sec - compress_end.tv_sec) * 1000 + (decompress_end.tv_usec- compress_end.tv_usec)/1000.f) / 1000);
 
 	ws->Destroy();	
 

@@ -3,13 +3,14 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
 void matrix_read (char* file_name, int size_x, int size_y, float** matrix, char* el_format = "%f\\t", char* str_sep = "\\n")
 {
-	FILE * src_file; fopen_s(&src_file, file_name, "rb");
+        FILE * src_file = fopen(file_name, "rb");
 
 	if (!src_file) {
-		fclose(src_file);
+                fclose(src_file);
 		return;
 	}
 
