@@ -80,6 +80,7 @@ public:
 			}
 		}
 
+                Unload();
 		this->Load(fn);
 	}
 	
@@ -145,10 +146,12 @@ public:
 	
 	virtual void Unload()
 	{
-		if(file)delete file;
-		file = NULL;
+            if(file) {
+                delete file;
+            }
+            file = NULL;
 
-		available = 0;
+            available = 0;
 	}
 
     virtual int ReadFlt(float *target,int count)

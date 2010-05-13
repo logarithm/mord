@@ -11,6 +11,7 @@ public:
 	virtual int Write(void *source,int size)=0;
 	virtual int Seek(int offset,int mode)=0;
 	virtual int Tell()=0;
+        virtual void Close()=0;
 	virtual ~MFile(){};
 
 	template<class T> __inline int Read(T *target)
@@ -40,8 +41,11 @@ public:
 	{	if(!f)return -1;	return fseek(f,(long)offset,mode);	}
 	virtual int Tell()
 	{	if(!f)return -1;	return ftell(f);	}
+        virtual void Close()
+        {
+            if(f)fclose(f);     }
 	virtual ~MAnsiFile()
-	{	if(f)fclose(f);	}
+        {	Close();	}
 };
 
 __inline MFile* mOpenFile(char *filename,char *mode)
