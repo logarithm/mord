@@ -10,12 +10,27 @@
 #include <cmath>
 using namespace std;
 
-#include "wavesound.h"
-#include "compressing/compress_data.h"
-#include "matrix/matrix_processing.h"
+#include "compressing/SWPM.h"
 
 int main(int argc, char** argv) {
-	//======================= Default values =======================//
+	SWPM* swpm = new SWPM;
+	swpm->SetCompressParams(60, 10, 5, 0, 60, 10, 5);
+	swpm->matrixDir = "files/matrix/";
+
+
+	swpm->LoadSignalFile("files/wav/lec02_03_8000.wav");
+	swpm->DeletePause();
+	swpm->CompressData();
+	swpm->SaveCompressedFile("files/wav/destination.cwf");
+
+	swpm->LoadCompressedFile("files/wav/destination.cwf");
+	swpm->DecompressData();
+	swpm->RecoveryPause();
+	swpm->SaveSignalData("files/wav/destination.wav", 8000, 16);
+
+	delete swpm;
+
+	/*//======================= Default values =======================//
 	int Rp = 10;	//Количество частотных диапазонов для паузы
 	int Np = 60;	//Размер фрейма (окна анализа) для паузы
 	int P = 100;	//Количество фреймов которые считаются паузой
@@ -93,8 +108,6 @@ int main(int argc, char** argv) {
 	float* wav_data = new float[wav_data_length];			//Исходный сигнал
 	ws->ReadFlt(wav_data, wav_data_length);
 
-	float wav_mean = matrix_mean(&wav_data, 1, wav_data_length);
-	
 	//===================== Вычисление энергии паузы ======================= //
 	float* pause_power = new float[Rp];
 	memset(pause_power, 0, sizeof(float) * Rp);
@@ -137,7 +150,7 @@ int main(int argc, char** argv) {
 	
 	float* result_data = new float[wav_data_length];			//Полученный сигнал	
 
-        unsigned short* pause_map = new unsigned short[(int) (ceil(area_count/2.0) * 2)];
+	unsigned short* pause_map = new unsigned short[(int) (ceil(area_count/2.0) * 2)];
 	bool last_pause = false;
 	int pause_section_length = 0;
 	int signal_section_length = 0;
@@ -294,7 +307,7 @@ int main(int argc, char** argv) {
 	delete AAp;
 	delete AAs;
 
-	delete ws;
+	delete ws;*/
 
 	return 0;
 }

@@ -8,8 +8,9 @@ class MFile
 public:
 	int		eof;
 	virtual int Read(void *target,int size)=0;
+	virtual int Read(void *target,int count,int size)=0;
 	virtual int Write(void *source,int size)=0;
-	virtual int Seek(int offset,int mode)=0;
+	virtual int Seek(long offset,int mode)=0;
 	virtual int Tell()=0;
         virtual void Close()=0;
 	virtual ~MFile(){};
@@ -35,10 +36,17 @@ public:
 		eof=feof(f);
 		return res;
 	}
+	virtual int Read(void *target,int elsize,int count)
+	{
+		if(!f)return -1;
+		int res=fread(target,elsize,count,f);
+		eof=feof(f);
+		return res;
+	}
 	virtual int Write(void *source,int size)
 	{	if(!f)return -1;	return fwrite(source,1,size,f); }
-	virtual int Seek(int offset,int mode)
-	{	if(!f)return -1;	return fseek(f,(long)offset,mode);	}
+	virtual int Seek(long offset,int mode)
+	{	if(!f)return -1;	return fseek(f,offset,mode);	}
 	virtual int Tell()
 	{	if(!f)return -1;	return ftell(f);	}
         virtual void Close()
