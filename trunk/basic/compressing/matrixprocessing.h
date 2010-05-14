@@ -3,7 +3,6 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <unistd.h>
 
 void matrix_read (char* file_name, int size_x, int size_y, float** matrix, char* el_format = "%f\\t", char* str_sep = "\\n")
 {

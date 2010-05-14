@@ -10,7 +10,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
 #include <cstring>
 #include <cmath>
 using namespace std;
@@ -585,7 +584,7 @@ public:
 		FrameContainer frameContainer(frames, areaCount);
 
 		UINT maxFrameSize = Rs*sizeof(short) + ceil((compressedBps + 1)*(Rs*Js) / 8.0);
-
+		
 		BYTE* _compressedData = new BYTE[maxFrameSize * areaCount];
 		compressedDataLength = frameContainer.WriteData(_compressedData);
 

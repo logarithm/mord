@@ -1,11 +1,18 @@
-HEADERS += wavesound.h \
-    sound.h \
+# -------------------------------------------------
+# Project created by QtCreator 2010-05-14T22:39:21
+# -------------------------------------------------
+QT -= core \
+    gui
+TARGET = basic
+CONFIG += console
+CONFIG -= app_bundle
+TEMPLATE = app
+SOURCES += main.cpp
+HEADERS += compressing/wavesound.h \
+    compressing/utils.h \
+    compressing/types.h \
     compressing/SWPM.h \
-    compressing/wavesound.h \
     compressing/sound.h \
     compressing/matrixprocessing.h \
-    compressing/file.h \
     compressing/frame.h \
-    compressing/types.h \
-    compressing/utils.h
-SOURCES += main.cpp
+    compressing/file.h
