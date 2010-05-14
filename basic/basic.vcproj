@@ -185,23 +185,35 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\compressing\compress_data.h"
+				RelativePath=".\compressing\file.h"
 				>
 			</File>
 			<File
-				RelativePath=".\file.h"
+				RelativePath=".\compressing\frame.h"
 				>
 			</File>
 			<File
-				RelativePath=".\matrix\matrix_processing.h"
+				RelativePath=".\compressing\matrixprocessing.h"
 				>
 			</File>
 			<File
-				RelativePath=".\sound.h"
+				RelativePath=".\compressing\sound.h"
 				>
 			</File>
 			<File
-				RelativePath=".\wavesound.h"
+				RelativePath=".\compressing\SWPM.h"
+				>
+			</File>
+			<File
+				RelativePath=".\compressing\types.h"
+				>
+			</File>
+			<File
+				RelativePath=".\compressing\utils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\compressing\wavesound.h"
 				>
 			</File>
 		</Filter>
@@ -211,7 +223,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\files\matrix\AA_10_60_8.txt"
+				RelativePath=".\files\matrix\AA_10_60.mtr"
 				>
 			</File>
 			<File
