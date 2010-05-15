@@ -22,11 +22,13 @@ using namespace std;
 
 class SWPM {
 private:
-	static const USHORT HEAD_SIZE = sizeof(UINT)*3 + sizeof(USHORT)*4 + sizeof(BYTE)*2;
+	static const USHORT HEAD_SIZE = sizeof(UINT)*3 + sizeof(USHORT)*5 + sizeof(BYTE)*2;
 	static const USHORT PAUSE_BOUNDARY = 20;
 
     float* signal;
 	ULONG signalLength;
+	BYTE signalBps;
+	USHORT signalRate;
 
     float* signalWithoutPause;
     ULONG signalWithoutPauseLength;
@@ -68,6 +70,7 @@ private:
 	void _ClearPointers() {
 		signalLength				= 0;
 		signalBps					= 0;
+		signalRate					= 0;
 		signalWithoutPauseLength	= 0;
 		compressedDataLength		= 0;
 		pauseSegmentCount			= 0;
@@ -81,6 +84,7 @@ private:
 	void _Copy(const SWPM &_swpm) {
 		signalLength				= _swpm.signalLength;
 		signalBps					= _swpm.signalBps;
+		signalRate					= _swpm.signalRate;
 		signalWithoutPauseLength	= _swpm.signalWithoutPauseLength;
 		compressedDataLength		= _swpm.compressedDataLength;
 		compressedBps				= _swpm.compressedBps;
@@ -180,8 +184,6 @@ public:
     }
 
 	char * matrixDir;
-	BYTE signalBps;
-	USHORT signalRate;
 
 	/**
 	 * @param _Np The size of the pause frame
@@ -270,13 +272,6 @@ public:
 		delete signalFile;
 	}
 
-	void SaveSignalData(char* fileName, USHORT _signalRate, BYTE _signalBps) {
-		signalRate = _signalRate;
-		signalBps = _signalBps;
-
-		SaveSignalData(fileName);
-	}
-
 	void SaveSignalWithoutPauseData(char* fileName) {
 		WaveSound* signalFile = new WaveSound();
 
@@ -299,6 +294,7 @@ public:
 		compressedFile->Read(&head);
 
 		compressedFile->Read(&signalLength, sizeof(UINT));
+		compressedFile->Read(&signalRate);
 		compressedFile->Read(&signalBps);
 
 		compressedFile->Read(&Rp);
@@ -329,6 +325,7 @@ public:
 		UINT swpm = (UINT)"SWPM";
 		compressedFile->Write(&swpm, sizeof(UINT));
 		compressedFile->Write(&signalLength, sizeof(UINT));
+		compressedFile->Write(&signalRate);
 		compressedFile->Write(&signalBps);
 		compressedFile->Write(&Rp);
 		compressedFile->Write(&Np);

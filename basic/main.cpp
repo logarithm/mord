@@ -13,12 +13,12 @@ using namespace std;
 
 int main(int argc, char** argv) {
 	SWPM* swpm = new SWPM;
-	swpm->SetCompressParams(60, 10, 5, 0, 60, 10, 7);
+	swpm->SetCompressParams(60, 10, 5, 0, 60, 10, 3);
 	swpm->matrixDir = "d:/svn/trunk/basic/files/matrix/";
 
 
-	swpm->LoadSignalFile("d:/svn/trunk/basic/files/wav/lec02_03_8000.wav");
-	//swpm->LoadSignalFile("d:/svn/trunk/basic/files/wav/source.wav");
+	//swpm->LoadSignalFile("d:/svn/trunk/basic/files/wav/lec02_03_8000.wav");
+	swpm->LoadSignalFile("d:/svn/trunk/basic/files/wav/source.wav");
 	swpm->DeletePause();
 	//swpm->SaveSignalWithoutPauseData("d:/svn/trunk/basic/files/wav/1.wav");
 	swpm->CompressData();
@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
 	swpm->LoadCompressedFile("d:/svn/trunk/basic/files/wav/destination.cwf");
 	swpm->DecompressData();
 	swpm->RecoveryPause();
-	swpm->SaveSignalData("d:/svn/trunk/basic/files/wav/destination.wav", 8000, 16);
+	swpm->SaveSignalData("d:/svn/trunk/basic/files/wav/destination.wav");
 
 	delete swpm;
 
