@@ -164,10 +164,6 @@ struct FrameContainer {
 	}
 
 	void ReadData(BYTE* data, UINT dataSize, USHORT R, USHORT N, BYTE bps) {
-		/*FILE * file = fopen("1", "wb");
-		fwrite(data, 1, sizeof(BYTE)*dataSize, file);
-		fclose(file);*/
-
 		short J = 2*(N/(2*R)) + 2;
 
 		USHORT* quantVal = new USHORT[R*J];
@@ -229,15 +225,6 @@ struct FrameContainer {
 		}
 
 		this->frameCount = fc;
-
-		/*UINT maxFrameDataSize = ceil((R*J*(bps + 1))/8.0);
-		UINT maxFrameSize = sizeof(short)*R + maxFrameDataSize;
-		BYTE* compressedData = new BYTE[maxFrameSize*fc];
-		int len = this->WriteData(compressedData);
-
-		FILE * file2 = fopen("2", "wb");
-		fwrite(compressedData, 1, sizeof(BYTE)*len, file2);
-		fclose(file2);	*/	
 	}
 };
 
