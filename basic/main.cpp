@@ -16,17 +16,13 @@ int main(int argc, char** argv) {
 	swpm->SetCompressParams(60, 10, 5, 0, 60, 10, 3);
 	swpm->matrixDir = "d:/svn/trunk/basic/files/matrix/";
 
-
-	//swpm->LoadSignalFile("d:/svn/trunk/basic/files/wav/lec02_03_8000.wav");
-	swpm->LoadSignalFile("d:/svn/trunk/basic/files/wav/source.wav");
-	swpm->DeletePause();
-	//swpm->SaveSignalWithoutPauseData("d:/svn/trunk/basic/files/wav/1.wav");
-	swpm->CompressData();
+	swpm->LoadSignalFile("d:/svn/trunk/basic/files/wav/lec02_03_8000.wav");
+	//swpm->LoadSignalFile("d:/svn/trunk/basic/files/wav/source.wav");
+	swpm->FullCompressData();
 	swpm->SaveCompressedFile("d:/svn/trunk/basic/files/wav/destination.cwf");
 
 	swpm->LoadCompressedFile("d:/svn/trunk/basic/files/wav/destination.cwf");
-	swpm->DecompressData();
-	swpm->RecoveryPause();
+	swpm->FullDecompressData();
 	swpm->SaveSignalData("d:/svn/trunk/basic/files/wav/destination.wav");
 
 	delete swpm;

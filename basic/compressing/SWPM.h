@@ -309,7 +309,7 @@ public:
 
 		compressedFile->Read(&pauseSegmentCount);
 		pauseMap = new USHORT[pauseSegmentCount*2];
-		compressedFile->Read(pauseMap, sizeof(USHORT) * pauseSegmentCount * 2);
+		if (pauseSegmentCount > 0) compressedFile->Read(pauseMap, sizeof(USHORT) * pauseSegmentCount * 2);
 
 		compressedDataLength = fileSize - (HEAD_SIZE + (sizeof(USHORT) * pauseSegmentCount * 2));
 
@@ -334,7 +334,7 @@ public:
 		compressedFile->Write(&compressedBps);
 
 		compressedFile->Write(&pauseSegmentCount);
-		compressedFile->Write(pauseMap, sizeof(USHORT)*pauseSegmentCount*2);
+		if (pauseSegmentCount > 0) compressedFile->Write(pauseMap, sizeof(USHORT)*pauseSegmentCount*2);
 
 		compressedFile->Write(compressedData, sizeof(BYTE)*compressedDataLength);
 
@@ -342,6 +342,8 @@ public:
 	}
 
 	void DeletePause() {
+		if (signal == NULL) return;
+
 		float** AAp = new float*[Rp*Jp];
 		for (USHORT i = 0; i < Rp*Jp; i++)
 			AAp[i] = new float[Np];
@@ -507,13 +509,20 @@ public:
 	}
 
 	void CompressData() {
+		if (signalWithoutPause == NULL && signal == NULL) {
+			return;
+		}
+
+		float* _signal = signalWithoutPause == NULL ? signal : signalWithoutPause;
+		UINT _signalLength = signalWithoutPause == NULL ? signalLength : signalWithoutPauseLength;
+
 		float** AAs = new float*[Rs*Js];
 		for (USHORT i = 0; i < Rs*Js; i++)
 			AAs[i] = new float[Ns];
 
 		_LoadMatrix(AAs, Ns, Rs);
 
-		UINT areaCount = (int)ceil(signalWithoutPauseLength/ (float)Ns);
+		UINT areaCount = (int)ceil(_signalLength / (float)Ns);
 
 		USHORT* quantRes = new USHORT[Rs*Js];
 		float* RsMax = new float[Rs];
@@ -522,10 +531,10 @@ public:
 		Frame* frames = new Frame[areaCount];
 
 		for (UINT currArea = 0; currArea < areaCount; currArea++) {
-			UINT areaLength = (currArea + 1)*Ns > signalWithoutPauseLength ? signalWithoutPauseLength - (currArea)*Ns : Ns;
+			UINT areaLength = (currArea + 1)*Ns > _signalLength ? _signalLength - (currArea)*Ns : Ns;
 
 			float* areaData = new float[areaLength];			//Семпл
-			memcpy(areaData, signalWithoutPause+(currArea*Ns), sizeof(float)*areaLength);
+			memcpy(areaData, _signal+(currArea*Ns), sizeof(float)*areaLength);
 
 			float area_mean = matrix_mean(&areaData, 1, areaLength);
 
@@ -593,6 +602,8 @@ public:
 	}
 
 	void DecompressData() {
+		if (compressedData == NULL) return;
+
 		float** AAs = new float*[Rs*Js];
 		for (USHORT i = 0; i < Rs*Js; i++)
 			AAs[i] = new float[Ns];
@@ -651,6 +662,16 @@ public:
 		delete [] AAs;
 
 		delete [] recoveryData;
+	}
+
+	void FullCompressData() {
+		DeletePause();
+		CompressData();
+	}
+
+	void FullDecompressData() {
+		DecompressData();
+		RecoveryPause();
 	}
 };
 
