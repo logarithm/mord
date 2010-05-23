@@ -13,7 +13,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
 	SWPM* swpm = new SWPM;
-	swpm->SetCompressParams(60, 10, 5, 0, 60, 10, 3);
+	swpm->SetCompressParams(60, 10, 5, 0, 128, 20, 3);
 	swpm->matrixDir = "d:/svn/trunk/basic/files/matrix/";
 
 	swpm->LoadSignalFile("d:/svn/trunk/basic/files/wav/lec02_03_8000.wav");
