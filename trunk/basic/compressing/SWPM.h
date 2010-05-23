@@ -145,14 +145,14 @@ private:
 		memcpy(compressedData, _compressedData, sizeof(BYTE)*compressedDataLength);
 	}
 
-	void _LoadMatrix(float** matrix, float N, float R) {
+	void _LoadMatrix(float** matrix, USHORT N, USHORT R) {
 		char matrixPath[1000];
 		strcpy(matrixPath, matrixDir);
 		strcat(matrixPath, "AA_");
-		char cR[10]; sprintf(cR, "%d", 10);
+		char cR[10]; sprintf(cR, "%d", R);
 		strcat(matrixPath,cR);
 		strcat(matrixPath, "_");
-		char cN[10]; sprintf(cN, "%d", 60);
+		char cN[10]; sprintf(cN, "%d", N);
 		strcat(matrixPath, cN);
 		strcat(matrixPath, ".mtr");
 
