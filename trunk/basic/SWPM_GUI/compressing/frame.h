@@ -120,8 +120,8 @@ struct FrameContainer {
 			int byteIndex = 0, bitIndex = 0;
 			for (USHORT quantIndex = 0; quantIndex < (R*J); quantIndex++) {
 				for(USHORT bpsIndex = 0; bpsIndex < bps; bpsIndex++) {
-					if (getBit(frames[frameIndex].quantValues[quantIndex], bpsIndex)) {
-						setBit((int&) dest[byteIndex], bitIndex);
+					if (Utils::getBit(frames[frameIndex].quantValues[quantIndex], bpsIndex)) {
+						Utils::setBit((int&) dest[byteIndex], bitIndex);
 					}
 
 					if (bpsIndex + 1 < bps) {
@@ -136,7 +136,7 @@ struct FrameContainer {
 					bitIndex = (++bitIndex) % 8;
 
 					if (frames[frameIndex].sign[quantIndex]) {
-						setBit((int&) dest[byteIndex], bitIndex);
+						Utils::setBit((int&) dest[byteIndex], bitIndex);
 					}
 
 					if (quantIndex + 1 < (R*J)) {
@@ -187,8 +187,8 @@ struct FrameContainer {
 			for (int quantIndex = 0; quantIndex < R*J; quantIndex++) {
 				USHORT val = 0;
 				for(int bpsIndex = 0; bpsIndex < bps; bpsIndex++) {
-					if (getBit(data[byteIndex], bitIndex) > 0) {
-						setBit((int&) val, bpsIndex);
+					if (Utils::getBit(data[byteIndex], bitIndex) > 0) {
+						Utils::setBit((int&) val, bpsIndex);
 					}
 
 					if (bpsIndex + 1 < bps) {
@@ -202,7 +202,7 @@ struct FrameContainer {
 					if (bitIndex + 1 > 7) byteIndex++;
 					bitIndex = (++bitIndex) % 8;
 
-					sign[quantIndex] = getBit(data[byteIndex], bitIndex) ? true : false;
+					sign[quantIndex] = Utils::getBit(data[byteIndex], bitIndex) ? true : false;
 
 					if (quantIndex + 1 < (R*J)) {
 						if (bitIndex + 1 > 7) 

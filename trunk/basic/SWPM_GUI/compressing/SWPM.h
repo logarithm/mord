@@ -157,10 +157,12 @@ private:
 		strcat(matrixPath, ".mtr");
 
 		USHORT J = 2*(N/(2*R)) + 2;
-		matrix_read(matrixPath, R*J, N, matrix);
+		MatrixProcessing::matrix_read(matrixPath, R*J, N, matrix);
 	}
 
 public:
+	char * matrixDir;
+
 	SWPM() {
 		signal				= NULL;
 		signalWithoutPause	= NULL;
@@ -181,9 +183,7 @@ public:
 
     ~SWPM() {
 		_ClearAll();
-    }
-
-	char * matrixDir;
+	}
 
 	/**
 	 * @param _Np The size of the pause frame
@@ -245,6 +245,9 @@ public:
 	 */
 	void GetCompressedData(float* _compressedDataDst)			{ memcpy(_compressedDataDst, compressedData, sizeof(float)*GetCompressedDataLenght()); }
 	ULONG GetCompressedDataLenght()								{ return compressedDataLength;	}
+
+	BYTE GetSignalBps()		{ return signalBps; }
+	USHORT GetSignalRate()	{ return signalRate; }
 
 	void LoadSignalFile(char *fileName) {
 		_ClearPointers();
@@ -358,13 +361,13 @@ public:
 			float* pauseData = new float[Np];
 			memcpy(pauseData, signal + p + currPauseArea*Np, sizeof(float)*Np);
 
-			float pauseMean = matrix_mean(&pauseData, 1, 60);
+			float pauseMean = MatrixProcessing::matrix_mean(&pauseData, 1, 60);
 
 			for (UINT i = 0; i < Np; i++)
 					pauseData[i] = pauseData[i] - pauseMean;
 
 			float* pauseYY = new float[Rp*Jp];
-			matrix_mult_trans(&pauseData, AAp, 1, 60, 80, &pauseYY);
+			MatrixProcessing::matrix_mult_trans(&pauseData, AAp, 1, 60, 80, &pauseYY);
 
 			for (UINT i = 0; i < Rp; i++) {
 				for (UINT j = 0; j < Jp; j++) {
@@ -402,7 +405,7 @@ public:
 			float* areaData = new float[areaLength];			//sample
 			memcpy(areaData, signal+(currArea*Np), sizeof(float)*areaLength);
 
-			float areaMean = matrix_mean(&areaData, 1, areaLength);
+			float areaMean = MatrixProcessing::matrix_mean(&areaData, 1, areaLength);
 
 			for (UINT i = 0; i < areaLength; i++)
 				areaData[i] = areaData[i] - areaMean;
@@ -412,7 +415,7 @@ public:
 			memset(areaPower, 0, sizeof(float) * Rp);
 
 			float* areaYY = new float[Rp*Jp];
-			matrix_mult_trans(&areaData, AAp, 1, areaLength, Rp*Jp, &areaYY);
+			MatrixProcessing::matrix_mult_trans(&areaData, AAp, 1, areaLength, Rp*Jp, &areaYY);
 
 			for (USHORT i = 0; i < Rp; i++) {
 				for (USHORT j = 0; j < Jp; j++) {
@@ -536,14 +539,14 @@ public:
 			float* areaData = new float[areaLength];			//Семпл
 			memcpy(areaData, _signal+(currArea*Ns), sizeof(float)*areaLength);
 
-			float area_mean = matrix_mean(&areaData, 1, areaLength);
+			float area_mean = MatrixProcessing::matrix_mean(&areaData, 1, areaLength);
 
 			//Сигнал минус среднее
 			for (int i = 0; i < areaLength; i++)
 				areaData[i] = areaData[i] - area_mean;
 
 			float* areaYY = new float[Rs*Js]; //Субполосный вектор
-			matrix_mult_trans(&areaData, AAs, 1, areaLength, Rs*Js, &areaYY);
+			MatrixProcessing::matrix_mult_trans(&areaData, AAs, 1, areaLength, Rs*Js, &areaYY);
 
 			//Квантование
 			memset(quantRes, 0, sizeof(USHORT)*Rs*Js);
@@ -643,7 +646,7 @@ public:
 				}
 			}
 
-			matrix_mult(&areaYY, AAs, 1, Rs*Js, Ns, &areaData);
+			MatrixProcessing::matrix_mult(&areaYY, AAs, 1, Rs*Js, Ns, &areaData);
 			memcpy(recoveryData + (frameIndex*Ns), areaData, sizeof(float)*Ns);
 			recoveryLength += Ns;
 
