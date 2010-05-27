@@ -148,7 +148,7 @@ private:
 	void _LoadMatrix(float** matrix, USHORT N, USHORT R) {
 		char matrixPath[1000];
 		strcpy(matrixPath, matrixDir);
-		strcat(matrixPath, "AA_");
+		strcat(matrixPath, "/AA_");
 		char cR[10]; sprintf(cR, "%d", R);
 		strcat(matrixPath,cR);
 		strcat(matrixPath, "_");
@@ -249,6 +249,12 @@ public:
 	BYTE GetSignalBps()		{ return signalBps; }
 	USHORT GetSignalRate()	{ return signalRate; }
 
+	BYTE GetCompressedBps() { return compressedBps; }
+	USHORT GetNp() { return Np; }
+	USHORT GetRp() { return Rp; }
+	USHORT GetNs() { return Ns; }
+	USHORT GetRs() { return Rs; }
+
 	void LoadSignalFile(char *fileName) {
 		_ClearPointers();
 
@@ -278,7 +284,7 @@ public:
 	void SaveSignalWithoutPauseData(char* fileName) {
 		WaveSound* signalFile = new WaveSound();
 
-		signalFile->Create(fileName, signalWithoutPause, signalWithoutPauseLength, 1, signalRate, 16);
+		signalFile->Create(fileName, signalWithoutPause, signalWithoutPauseLength, 1, signalRate, signalBps);
 
 		signalFile->Unload();
 		delete signalFile;

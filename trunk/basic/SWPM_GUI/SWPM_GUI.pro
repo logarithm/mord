@@ -15,3 +15,4 @@ HEADERS += mainwindow.h \
     compressing/frame.h \
     compressing/file.h
 FORMS += mainwindow.ui
+CONFIG += static
