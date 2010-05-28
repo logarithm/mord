@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri 28. May 03:28:15 2010
-**      by: Qt User Interface Compiler version 4.6.1
+** Created: Fri May 28 10:33:41 2010
+**      by: Qt User Interface Compiler version 4.6.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -111,7 +111,7 @@ public:
         decompressPanel->setObjectName(QString::fromUtf8("decompressPanel"));
         label = new QLabel(decompressPanel);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(10, 10, 51, 16));
+        label->setGeometry(QRect(10, 10, 71, 16));
         QFont font;
         font.setPointSize(10);
         font.setBold(true);
@@ -119,13 +119,13 @@ public:
         label->setFont(font);
         label_3 = new QLabel(decompressPanel);
         label_3->setObjectName(QString::fromUtf8("label_3"));
-        label_3->setGeometry(QRect(10, 40, 79, 13));
+        label_3->setGeometry(QRect(10, 40, 111, 16));
         label_4 = new QLabel(decompressPanel);
         label_4->setObjectName(QString::fromUtf8("label_4"));
-        label_4->setGeometry(QRect(10, 60, 22, 13));
+        label_4->setGeometry(QRect(10, 60, 31, 16));
         label_5 = new QLabel(decompressPanel);
         label_5->setObjectName(QString::fromUtf8("label_5"));
-        label_5->setGeometry(QRect(10, 80, 126, 13));
+        label_5->setGeometry(QRect(10, 80, 181, 16));
         line = new QFrame(decompressPanel);
         line->setObjectName(QString::fromUtf8("line"));
         line->setGeometry(QRect(0, 20, 281, 16));
@@ -133,19 +133,19 @@ public:
         line->setFrameShadow(QFrame::Sunken);
         inSignalLengthLabel = new QLabel(decompressPanel);
         inSignalLengthLabel->setObjectName(QString::fromUtf8("inSignalLengthLabel"));
-        inSignalLengthLabel->setGeometry(QRect(150, 40, 121, 16));
+        inSignalLengthLabel->setGeometry(QRect(190, 40, 81, 20));
         inSignalBpsLabel = new QLabel(decompressPanel);
         inSignalBpsLabel->setObjectName(QString::fromUtf8("inSignalBpsLabel"));
-        inSignalBpsLabel->setGeometry(QRect(150, 60, 121, 16));
+        inSignalBpsLabel->setGeometry(QRect(190, 60, 81, 20));
         inSignalRateLabel = new QLabel(decompressPanel);
         inSignalRateLabel->setObjectName(QString::fromUtf8("inSignalRateLabel"));
-        inSignalRateLabel->setGeometry(QRect(150, 80, 121, 16));
+        inSignalRateLabel->setGeometry(QRect(190, 80, 81, 20));
         deletePauseBtn = new QPushButton(decompressPanel);
         deletePauseBtn->setObjectName(QString::fromUtf8("deletePauseBtn"));
-        deletePauseBtn->setGeometry(QRect(10, 280, 111, 23));
+        deletePauseBtn->setGeometry(QRect(10, 270, 121, 23));
         compressBtn = new QPushButton(decompressPanel);
         compressBtn->setObjectName(QString::fromUtf8("compressBtn"));
-        compressBtn->setGeometry(QRect(10, 310, 111, 23));
+        compressBtn->setGeometry(QRect(10, 300, 121, 23));
         pauseMatrixCombo = new QComboBox(decompressPanel);
         pauseMatrixCombo->setObjectName(QString::fromUtf8("pauseMatrixCombo"));
         pauseMatrixCombo->setGeometry(QRect(130, 110, 141, 22));
@@ -190,7 +190,7 @@ public:
         compresPanel->setObjectName(QString::fromUtf8("compresPanel"));
         label_2 = new QLabel(compresPanel);
         label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(10, 10, 79, 16));
+        label_2->setGeometry(QRect(10, 10, 101, 16));
         label_2->setFont(font);
         line_2 = new QFrame(compresPanel);
         line_2->setObjectName(QString::fromUtf8("line_2"));
@@ -211,38 +211,38 @@ public:
         label_14->setGeometry(QRect(10, 100, 21, 16));
         label_15 = new QLabel(compresPanel);
         label_15->setObjectName(QString::fromUtf8("label_15"));
-        label_15->setGeometry(QRect(10, 120, 51, 16));
+        label_15->setGeometry(QRect(10, 120, 61, 16));
         label_16 = new QLabel(compresPanel);
         label_16->setObjectName(QString::fromUtf8("label_16"));
-        label_16->setGeometry(QRect(10, 140, 51, 16));
+        label_16->setGeometry(QRect(10, 140, 61, 16));
         decompressBtn = new QPushButton(compresPanel);
         decompressBtn->setObjectName(QString::fromUtf8("decompressBtn"));
-        decompressBtn->setGeometry(QRect(10, 170, 111, 23));
+        decompressBtn->setGeometry(QRect(10, 170, 121, 23));
         NpLabel = new QLabel(compresPanel);
         NpLabel->setObjectName(QString::fromUtf8("NpLabel"));
-        NpLabel->setGeometry(QRect(80, 40, 191, 16));
+        NpLabel->setGeometry(QRect(100, 40, 171, 16));
         RpLabel = new QLabel(compresPanel);
         RpLabel->setObjectName(QString::fromUtf8("RpLabel"));
-        RpLabel->setGeometry(QRect(80, 60, 191, 16));
+        RpLabel->setGeometry(QRect(100, 60, 171, 16));
         NsLabel = new QLabel(compresPanel);
         NsLabel->setObjectName(QString::fromUtf8("NsLabel"));
-        NsLabel->setGeometry(QRect(80, 80, 191, 16));
+        NsLabel->setGeometry(QRect(100, 80, 171, 16));
         RsLabel = new QLabel(compresPanel);
         RsLabel->setObjectName(QString::fromUtf8("RsLabel"));
-        RsLabel->setGeometry(QRect(80, 100, 191, 16));
+        RsLabel->setGeometry(QRect(100, 100, 171, 16));
         signalBpsLabel = new QLabel(compresPanel);
         signalBpsLabel->setObjectName(QString::fromUtf8("signalBpsLabel"));
-        signalBpsLabel->setGeometry(QRect(80, 120, 191, 16));
+        signalBpsLabel->setGeometry(QRect(100, 120, 171, 16));
         compressedBpsLabel = new QLabel(compresPanel);
         compressedBpsLabel->setObjectName(QString::fromUtf8("compressedBpsLabel"));
-        compressedBpsLabel->setGeometry(QRect(80, 140, 191, 16));
+        compressedBpsLabel->setGeometry(QRect(100, 140, 171, 16));
 
         horizontalLayout->addWidget(compresPanel);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 600, 21));
+        menuBar->setGeometry(QRect(0, 0, 600, 25));
         menu = new QMenu(menuBar);
         menu->setObjectName(QString::fromUtf8("menu"));
         menu_2 = new QMenu(menuBar);

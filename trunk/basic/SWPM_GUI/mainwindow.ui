@@ -34,7 +34,7 @@
         <rect>
          <x>10</x>
          <y>10</y>
-         <width>51</width>
+         <width>71</width>
          <height>16</height>
         </rect>
        </property>
@@ -54,8 +54,8 @@
         <rect>
          <x>10</x>
          <y>40</y>
-         <width>79</width>
-         <height>13</height>
+         <width>111</width>
+         <height>16</height>
         </rect>
        </property>
        <property name="text">
@@ -67,8 +67,8 @@
         <rect>
          <x>10</x>
          <y>60</y>
-         <width>22</width>
-         <height>13</height>
+         <width>31</width>
+         <height>16</height>
         </rect>
        </property>
        <property name="text">
@@ -80,8 +80,8 @@
         <rect>
          <x>10</x>
          <y>80</y>
-         <width>126</width>
-         <height>13</height>
+         <width>181</width>
+         <height>16</height>
         </rect>
        </property>
        <property name="text">
@@ -104,10 +104,10 @@
       <widget class="QLabel" name="inSignalLengthLabel">
        <property name="geometry">
         <rect>
-         <x>150</x>
+         <x>190</x>
          <y>40</y>
-         <width>121</width>
-         <height>16</height>
+         <width>81</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="text">
@@ -117,10 +117,10 @@
       <widget class="QLabel" name="inSignalBpsLabel">
        <property name="geometry">
         <rect>
-         <x>150</x>
+         <x>190</x>
          <y>60</y>
-         <width>121</width>
-         <height>16</height>
+         <width>81</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="text">
@@ -130,10 +130,10 @@
       <widget class="QLabel" name="inSignalRateLabel">
        <property name="geometry">
         <rect>
-         <x>150</x>
+         <x>190</x>
          <y>80</y>
-         <width>121</width>
-         <height>16</height>
+         <width>81</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="text">
@@ -144,8 +144,8 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>280</y>
-         <width>111</width>
+         <y>270</y>
+         <width>121</width>
          <height>23</height>
         </rect>
        </property>
@@ -157,8 +157,8 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>310</y>
-         <width>111</width>
+         <y>300</y>
+         <width>121</width>
          <height>23</height>
         </rect>
        </property>
@@ -211,9 +211,14 @@
         <rect>
          <x>10</x>
          <y>113</y>
-         <width>111</width>
+         <width>121</width>
          <height>16</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
        </property>
        <property name="text">
         <string>Матрица для пауз</string>
@@ -227,6 +232,11 @@
          <width>111</width>
          <height>16</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
        </property>
        <property name="text">
         <string>Матрица для сиг.</string>
@@ -297,7 +307,7 @@
         <rect>
          <x>10</x>
          <y>10</y>
-         <width>79</width>
+         <width>101</width>
          <height>16</height>
         </rect>
        </property>
@@ -382,7 +392,7 @@
         <rect>
          <x>10</x>
          <y>120</y>
-         <width>51</width>
+         <width>61</width>
          <height>16</height>
         </rect>
        </property>
@@ -395,7 +405,7 @@
         <rect>
          <x>10</x>
          <y>140</y>
-         <width>51</width>
+         <width>61</width>
          <height>16</height>
         </rect>
        </property>
@@ -408,7 +418,7 @@
         <rect>
          <x>10</x>
          <y>170</y>
-         <width>111</width>
+         <width>121</width>
          <height>23</height>
         </rect>
        </property>
@@ -419,9 +429,9 @@
       <widget class="QLabel" name="NpLabel">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>100</x>
          <y>40</y>
-         <width>191</width>
+         <width>171</width>
          <height>16</height>
         </rect>
        </property>
@@ -432,9 +442,9 @@
       <widget class="QLabel" name="RpLabel">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>100</x>
          <y>60</y>
-         <width>191</width>
+         <width>171</width>
          <height>16</height>
         </rect>
        </property>
@@ -445,9 +455,9 @@
       <widget class="QLabel" name="NsLabel">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>100</x>
          <y>80</y>
-         <width>191</width>
+         <width>171</width>
          <height>16</height>
         </rect>
        </property>
@@ -458,9 +468,9 @@
       <widget class="QLabel" name="RsLabel">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>100</x>
          <y>100</y>
-         <width>191</width>
+         <width>171</width>
          <height>16</height>
         </rect>
        </property>
@@ -471,9 +481,9 @@
       <widget class="QLabel" name="signalBpsLabel">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>100</x>
          <y>120</y>
-         <width>191</width>
+         <width>171</width>
          <height>16</height>
         </rect>
        </property>
@@ -484,9 +494,9 @@
       <widget class="QLabel" name="compressedBpsLabel">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>100</x>
          <y>140</y>
-         <width>191</width>
+         <width>171</width>
          <height>16</height>
         </rect>
        </property>
@@ -504,7 +514,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
