@@ -29,7 +29,6 @@ private:
 private slots:
  void on_decompressBtn_clicked();
  void on_compressBtn_clicked();
- void on_deletePauseBtn_clicked();
  void on_loadCwf_triggered();
  void on_loadWav_triggered();
  void on_exit_triggered();

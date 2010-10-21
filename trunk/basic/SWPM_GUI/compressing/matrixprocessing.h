@@ -10,7 +10,7 @@ public:
 	{
 		FILE * src_file = fopen(file_name, "rb");
 
-		char* oldLocale = setlocale (LC_NUMERIC, "C");
+//		char* oldLocale = setlocale (LC_NUMERIC, "C");
 
 		if (!src_file) {
 			fclose(src_file);
@@ -25,7 +25,7 @@ public:
 			fscanf(src_file, str_sep);
 		}
 
-		setlocale (LC_NUMERIC, oldLocale);
+//		setlocale (LC_NUMERIC, oldLocale);
 
 		fclose(src_file);
 
