@@ -45,7 +45,6 @@ void MainWindow::clearCompressPanel() {
 	this->ui->pauseMatrixCombo->clear();
 	this->ui->signalMatrixCombo->clear();
 
-	this->ui->deletePauseBtn->setEnabled(false);
 	this->ui->compressBtn->setEnabled(false);
 }
 
@@ -96,7 +95,6 @@ void MainWindow::on_loadWav_triggered()
 		this->ui->inSignalBpsLabel->setText(QString::number(compressor->GetSignalBps()));
 		this->ui->inSignalRateLabel->setText(QString::number(compressor->GetSignalRate()));
 
-		this->ui->deletePauseBtn->setEnabled(true);
 		this->ui->compressBtn->setEnabled(true);
 		loadCombos();
 	}
@@ -136,36 +134,6 @@ void MainWindow::on_loadMatrixPath_triggered()
 	if (!dirName.isEmpty()) {
 		matrixDir = dirName;
 		loadCombos();
-	}
-}
-
-void MainWindow::on_deletePauseBtn_clicked()
-{
-	if (matrixDir.length() <= 0) {
-		QMessageBox::warning(this, trUtf8("Ошибка"),trUtf8("Директория с матрицами не выбрана"));
-		return;
-	}
-
-	QFileDialog::Options options;
-	QString selectedFilter;
-	QString fileName = QFileDialog::getSaveFileName(this,
-								trUtf8("Сохранение сигнала без пауз"),
-								"",
-								trUtf8("Звуковые файлы (*.wav)"),
-								&selectedFilter,
-								options);
-	if (!fileName.isEmpty()) {
-		QString pauseMatrix = this->ui->pauseMatrixCombo->itemText(this->ui->pauseMatrixCombo->currentIndex());
-		QStringList pauseParams = pauseMatrix.split("_");
-		USHORT R = ((QString)pauseParams.takeAt(1)).toShort();
-		USHORT N = ((QString)((QString)pauseParams.takeAt(1)).split(".").takeAt(0)).toShort();
-
-		compressor->SetPauseParams(N, R, this->ui->PEdit->text().toShort(), this->ui->pEdit->text().toShort());
-		compressor->matrixDir = matrixDir.toAscii().data();
-		compressor->DeletePause();
-		compressor->SaveSignalWithoutPauseData(fileName.toAscii().data());
-
-		QMessageBox::information(this, trUtf8("Выполнено"),trUtf8("Паузы удалены"));
 	}
 }
 

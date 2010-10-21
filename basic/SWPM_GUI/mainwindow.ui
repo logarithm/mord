@@ -140,24 +140,11 @@
         <string>-</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="deletePauseBtn">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>270</y>
-         <width>121</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Удалить паузы</string>
-       </property>
-      </widget>
       <widget class="QPushButton" name="compressBtn">
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>300</y>
+         <y>270</y>
          <width>121</width>
          <height>23</height>
         </rect>
@@ -423,7 +410,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Разжать</string>
+        <string>Восстановить</string>
        </property>
       </widget>
       <widget class="QLabel" name="NpLabel">
@@ -514,7 +501,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

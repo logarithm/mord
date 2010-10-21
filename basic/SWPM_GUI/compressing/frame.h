@@ -72,9 +72,9 @@ struct Frame {
 	}
 
 	~Frame() {
-		delete maxs;
-        delete quantValues;
-		delete sign;
+		delete [] maxs;
+        delete [] quantValues;
+		delete [] sign;
 	}
 };
 
@@ -225,6 +225,10 @@ struct FrameContainer {
 		}
 
 		this->frameCount = fc;
+	}
+
+	~FrameContainer() {
+		delete [] frames;
 	}
 };
 
